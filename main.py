@@ -59,7 +59,7 @@ def __createButtons():
     al.fillcolor("black")
     al.pencolor("white")
     al.up()
-    al.goto(baseX - gridlength, baseY - gridlength * 6)
+    al.goto(baseX - gridlength, baseY - gridlength * 5)
     for i in range(len(buttonStr)):
         drawRectangle(buttonStr[i])
         al.up()
