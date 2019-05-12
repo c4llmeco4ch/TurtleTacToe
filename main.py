@@ -15,6 +15,7 @@ gameOver = False
 errorText = ""
 
 def createBoard():
+    gameOver = False
     for x in range (3):
         for y in range (3):
             __createBox(x, y)
@@ -22,6 +23,10 @@ def createBoard():
     __createButtons()
     whoseTurn()
 
+'''
+* Creating a box at (col, row) location
+* @param 
+'''
 def __createBox(col, row):
     x = baseX + (col * 50)
     y = baseY + (row * 50)
@@ -39,6 +44,7 @@ def __createBox(col, row):
     al.up()
 
 def __createLabels():
+    """Creates the labels for whose turn it is"""
     al.up()
     al.goto(0, baseY - (gridlength * 2))
     al.write("Whose Turn Is It?", False, align="center")
@@ -56,6 +62,7 @@ def __createLabels():
     al.goto(0, baseY - (gridlength * 3.75))
 
 def __createButtons():
+    """Creates the play again and quit buttons"""
     al.fillcolor("black")
     al.pencolor("white")
     al.up()
@@ -102,9 +109,10 @@ def __checkWin(x, y):
         turn = 1 
     else:
         turn = -1
-    horiz = __checkRow(turn)
-    vert = __checkCol(turn)
+    horiz = __checkRow(y, turn)
+    vert = __checkCol(x, turn)
     if (x == 1 and not y == 1) or (not x == 1 and y == 1):
+        #Only check diagonals if the space is not on a middle edge
         diagRight = __checkDiagDown(turn)
         diagLeft = __checkDiagUp(turn)
     else:
@@ -112,19 +120,22 @@ def __checkWin(x, y):
         diagLeft = False
     return horiz or vert or diagRight or diagLeft
 
-def __checkRow(turn):
+def __checkRow(y, turn):
+    """Determines if a row is full for winning"""
     for i in range(len(boardState)):
         if boardState[y][i] != turn:
             return False
     return True
 
-def __checkCol(turn):
+def __checkCol(x, turn):
+    """Determines if a column is full for winning"""
     for i in range(len(boardState)):
         if boardState[i][x] != turn:
             return False
     return True
 
 def __checkDiagDown(turn):
+    """Determines if the downward diagonal is full for winning"""
     i = 0
     while i < len(boardState):
         if boardState[i][i] != turn:
@@ -133,6 +144,7 @@ def __checkDiagDown(turn):
     return True
 
 def __checkDiagUp(turn):
+    """Determines if the upward diagonal is full for winning"""
     i = 0
     while i < len(boardState):
         if boardState[i][len(boardState) - 1 - i] != turn:
@@ -148,7 +160,18 @@ def __validMove(block):
     else:
         boardState[y][x] = -1
     __addMarker(x,y)
-    __checkWin(x,y)
+    if __checkWin(x,y):
+        turn = -1
+        if playerOneTurn:
+            turn = 1
+        else:
+            turn = 2
+        __writeWinner(turn)
+        gameOver = True
+    if __tieChecker():
+        __writeWinner(-1)
+        gameOver = True
+    
     #Else, switch players
 
 def __addMarker(x, y):
