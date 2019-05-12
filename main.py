@@ -53,7 +53,7 @@ def __createLabels():
     al.goto(gridlength, baseY - (gridlength * 3.5))
     al.write("O")
     al.up()
-    al.goto(0, baseY - (gridlength * 4.25))
+    al.goto(0, baseY - (gridlength * 3.75))
 
 def __createButtons():
     al.fillcolor("black")
@@ -91,6 +91,55 @@ def takeTurn(block):
     else:
         return None
 
+'''
+* @param x,y: the xy coordinate pairing for the block chosen
+* Check if the turn player has won. 
+* @return Whether the turn player has won
+'''
+def __checkWin(x, y):
+    turn = 0
+    if playerOneTurn:
+        turn = 1 
+    else:
+        turn = -1
+    horiz = __checkRow(turn)
+    vert = __checkCol(turn)
+    if (x == 1 and not y == 1) or (not x == 1 and y == 1):
+        diagRight = __checkDiagDown(turn)
+        diagLeft = __checkDiagUp(turn)
+    else:
+        diagRight = False
+        diagLeft = False
+    return horiz or vert or diagRight or diagLeft
+
+def __checkRow(turn):
+    for i in range(len(boardState)):
+        if boardState[y][i] != turn:
+            return False
+    return True
+
+def __checkCol(turn):
+    for i in range(len(boardState)):
+        if boardState[i][x] != turn:
+            return False
+    return True
+
+def __checkDiagDown(turn):
+    i = 0
+    while i < len(boardState):
+        if boardState[i][i] != turn:
+            return False
+        i += 1
+    return True
+
+def __checkDiagUp(turn):
+    i = 0
+    while i < len(boardState):
+        if boardState[i][len(boardState) - 1 - i] != turn:
+            return False
+        i += 1
+    return True
+
 def __validMove(block):
     x = (block % 3) - 1
     y = (block - 1) // 3
@@ -99,7 +148,7 @@ def __validMove(block):
     else:
         boardState[y][x] = -1
     __addMarker(x,y)
-    #TODO: Add checkWin()
+    __checkWin(x,y)
     #Else, switch players
 
 def __addMarker(x, y):
@@ -118,12 +167,12 @@ def checkSpot(block):
 
 def whoseTurn():
     if playerOneTurn: 
-        al.goto(-1 * gridlength, baseY - (gridlength * 4.5)) 
+        al.goto(-1 * gridlength, baseY - (gridlength * 2.75)) 
     else:
-        al.goto(gridlength, baseY - (gridlength * 4.5))
+        al.goto(gridlength, baseY - (gridlength * 2.75))
 
 createBoard()
-time.sleep(10)
+time.sleep(3)
 
 
 
