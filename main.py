@@ -1,6 +1,6 @@
 from turtle import *
 import time
-
+#TODO: Add turtle implementation for clicking/typing spaces
 baseX = -75
 baseY = -75
 gridlength = 50
@@ -160,7 +160,7 @@ def __validMove(block):
     else:
         boardState[y][x] = -1
     __addMarker(x,y)
-    if __checkWin(x,y):
+    if __checkWin(x,y): #Check if current player won
         turn = -1
         if playerOneTurn:
             turn = 1
@@ -168,11 +168,25 @@ def __validMove(block):
             turn = 2
         __writeWinner(turn)
         gameOver = True
-    if __tieChecker():
+    elif __tieChecker(): #If there's no win, check for ties
         __writeWinner(-1)
         gameOver = True
-    
-    #Else, switch players
+    else:
+        playerOneTurn = not playerOneTurn #Otherwise, switch players
+
+def __writeWinner(turn):
+    whoseTurn()
+    if turn == -1:
+        al.setx(0)
+        al.write("It's a tie!", align = "center")
+    else:
+        al.write("Winner!")
+
+def __tieChecker():
+    for space in boardState:
+        if space == 0:
+            return False
+    return True
 
 def __addMarker(x, y):
     midX = (baseX + (.5 * gridlength)) + (x * gridlength)
