@@ -68,13 +68,13 @@ def __createButtons():
     al.up()
     al.goto(baseX - gridlength, baseY - gridlength * 5)
     for i in range(len(buttonStr)):
-        drawRectangle(buttonStr[i])
+        __drawRectangle(buttonStr[i])
         al.up()
         al.setx(al.xcor() + gridlength * 3)
         buttonLoc.append((al.xcor(), al.ycor()))
     al.color("black")
 
-def drawRectangle(text):
+def __drawRectangle(text):
     al.seth(0)
     al.down()
     al.begin_fill()
@@ -91,19 +91,57 @@ def drawRectangle(text):
     al.write(text, False, "center")
     al.goto(currX, currY)
     
+def checkClick(x, y):
+    if (x >= baseX and y >= baseY):
+        if (x <= baseX + (3 * gridlength)) and (y <= baseY + (3 * gridlength)):
+            takeTurn(__determineBlock(x, y))
+    if y >= baseY - (gridlength * 5) and y <= baseY - (gridlength * 4):
+        if (x >= baseX - gridlength) and (x <= baseX + gridlength):
+            #TODO: Restart Game
+            return None
+        elif (x >= baseX + (gridlength * 2)) and x <= baseX + (gridlength * 4):
+            #TODO: Quit
+            return None
     
 def takeTurn(block):
     if checkSpot(block):
-        __validMove(block)
+        validMove(block)
     else:
         return None
+
+def checkSpot(block):
+    x = (block % 3) - 1
+    y = (block - 1) // 3
+    return boardState[y][x] == 0
+
+def validMove(block):
+    x = (block % 3) - 1
+    y = (block - 1) // 3
+    if playerOneTurn:
+        boardState[y][x] = 1
+    else:
+        boardState[y][x] = -1
+    addMarker(x,y)
+    if checkWin(x,y):
+        turn = -1
+        if playerOneTurn:
+            turn = 1
+        else:
+            turn = 2
+        __writeWinner(turn)
+        gameOver = True
+    elif tieChecker():
+        __writeWinner(-1)
+        gameOver = True
+    else:
+        playerOneTurn = not playerOneTurn
 
 '''
 * @param x,y: the xy coordinate pairing for the block chosen
 * Check if the turn player has won. 
 * @return Whether the turn player has won
 '''
-def __checkWin(x, y):
+def checkWin(x, y):
     turn = 0
     if playerOneTurn:
         turn = 1 
@@ -152,28 +190,6 @@ def __checkDiagUp(turn):
         i += 1
     return True
 
-def __validMove(block):
-    x = (block % 3) - 1
-    y = (block - 1) // 3
-    if playerOneTurn:
-        boardState[y][x] = 1
-    else:
-        boardState[y][x] = -1
-    __addMarker(x,y)
-    if __checkWin(x,y): #Check if current player won
-        turn = -1
-        if playerOneTurn:
-            turn = 1
-        else:
-            turn = 2
-        __writeWinner(turn)
-        gameOver = True
-    elif __tieChecker(): #If there's no win, check for ties
-        __writeWinner(-1)
-        gameOver = True
-    else:
-        playerOneTurn = not playerOneTurn #Otherwise, switch players
-
 def __writeWinner(turn):
     whoseTurn()
     if turn == -1:
@@ -182,13 +198,13 @@ def __writeWinner(turn):
     else:
         al.write("Winner!")
 
-def __tieChecker():
+def tieChecker():
     for space in boardState:
         if space == 0:
             return False
     return True
 
-def __addMarker(x, y):
+def addMarker(x, y):
     midX = (baseX + (.5 * gridlength)) + (x * gridlength)
     midY = (baseY + (.5 * gridlength)) + (y * gridlength)
     al.goto(midX,midY)
@@ -197,11 +213,6 @@ def __addMarker(x, y):
     else:
         al.stamp()
 
-def checkSpot(block):
-    x = (block % 3) - 1
-    y = (block - 1) // 3
-    return boardState[y][x] == 0
-
 def whoseTurn():
     if playerOneTurn: 
         al.goto(-1 * gridlength, baseY - (gridlength * 2.75)) 
@@ -209,7 +220,4 @@ def whoseTurn():
         al.goto(gridlength, baseY - (gridlength * 2.75))
 
 createBoard()
-time.sleep(3)
-
-
-
+al.onclick()
