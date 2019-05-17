@@ -103,6 +103,10 @@ def checkClick(x, y):
             #TODO: Quit
             return None
     
+def __determineBlock(x, y):
+    #TODO: Determine which of the 9 blocks the player clicked
+    return None
+
 def takeTurn(block):
     if checkSpot(block):
         validMove(block)
