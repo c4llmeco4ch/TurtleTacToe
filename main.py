@@ -97,30 +97,31 @@ def checkClick(x, y):
             takeTurn(__determineBlock(x, y))
     if y >= baseY - (gridlength * 5) and y <= baseY - (gridlength * 4):
         if (x >= baseX - gridlength) and (x <= baseX + gridlength):
-            #TODO: Restart Game
-            return None
+            al.clear()
+            createBoard()
         elif (x >= baseX + (gridlength * 2)) and x <= baseX + (gridlength * 4):
-            #TODO: Quit
-            return None
+            al.up()
+            al.goto(0, gridlength)
+            al.down()
+            al.write("Thanks for playing", align="center")
+            time.sleep(1)
+            exit()
     
 def __determineBlock(x, y):
-    #TODO: Determine which of the 9 blocks the player clicked
-    return None
+    row = -y // gridlength
+    col = x // gridlength
+    return takeTurn(col, row)
 
-def takeTurn(block):
-    if checkSpot(block):
-        validMove(block)
+def takeTurn(x, y):
+    if checkSpot(x, y):
+        validMove(x, y)
     else:
         return None
 
-def checkSpot(block):
-    x = (block % 3) - 1
-    y = (block - 1) // 3
+def checkSpot(x, y):
     return boardState[y][x] == 0
 
-def validMove(block):
-    x = (block % 3) - 1
-    y = (block - 1) // 3
+def validMove(x, y):
     if playerOneTurn:
         boardState[y][x] = 1
     else:
@@ -224,4 +225,5 @@ def whoseTurn():
         al.goto(gridlength, baseY - (gridlength * 2.75))
 
 createBoard()
-al.onclick()
+time.sleep(4)
+al.onclick(checkClick)
