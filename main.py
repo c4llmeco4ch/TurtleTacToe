@@ -109,9 +109,10 @@ def checkClick(x, y):
             exit()
     
 def __determineBlock(x, y):
-    row = -y // gridlength
-    col = x // gridlength
-    return takeTurn(col, row)
+    row = abs(y // gridlength)
+    col = abs(x // gridlength)
+    print("Col: " + str(col) + ", Row: " + str(row))
+    return takeTurn(int(col), int(row))
 
 def takeTurn(x, y):
     if checkSpot(x, y):
@@ -228,4 +229,4 @@ def whoseTurn():
 createBoard()
 
 screen.onclick(checkClick)
-screen.listen()
+screen.mainloop()
