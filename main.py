@@ -9,6 +9,7 @@ buttonStr = ["Play Again", "Exit"]
 buttonLoc = []
 al = Turtle()
 al.shape("turtle")
+screen = Screen()
 al.speed(7)
 playerOneTurn = True
 gameOver = False
@@ -92,7 +93,7 @@ def __drawRectangle(text):
     al.goto(currX, currY)
     
 def checkClick(x, y):
-    if (x >= baseX and y >= baseY):
+    if (x >= baseX and y >= baseY) and not gameOver:
         if (x <= baseX + (3 * gridlength)) and (y <= baseY + (3 * gridlength)):
             takeTurn(__determineBlock(x, y))
     if y >= baseY - (gridlength * 5) and y <= baseY - (gridlength * 4):
@@ -225,5 +226,6 @@ def whoseTurn():
         al.goto(gridlength, baseY - (gridlength * 2.75))
 
 createBoard()
-time.sleep(4)
-al.onclick(checkClick)
+
+screen.onclick(checkClick)
+screen.listen()
