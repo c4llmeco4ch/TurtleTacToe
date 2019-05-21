@@ -93,18 +93,21 @@ def __drawRectangle(text):
     al.goto(currX, currY)
     
 def checkClick(x, y):
+    print("Click registered at " + str(x) + ", " + str(y))
     if (x >= baseX and y >= baseY) and not gameOver:
         if (x <= baseX + (3 * gridlength)) and (y <= baseY + (3 * gridlength)):
             takeTurn(__determineBlock(x, y))
-    if y >= baseY - (gridlength * 5) and y <= baseY - (gridlength * 4):
+    if y >= baseY - (gridlength * 6) and y <= baseY - (gridlength * 5):
         if (x >= baseX - gridlength) and (x <= baseX + gridlength):
             al.clear()
             createBoard()
         elif (x >= baseX + (gridlength * 2)) and x <= baseX + (gridlength * 4):
             al.up()
-            al.goto(0, gridlength)
+            al.goto(0, gridlength * 3)
             al.down()
             al.write("Thanks for playing", align="center")
+            al.up()
+            al.sety(al.ycor() - gridlength // 4)
             time.sleep(1)
             exit()
     
