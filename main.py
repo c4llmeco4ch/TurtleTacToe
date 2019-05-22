@@ -16,7 +16,11 @@ gameOver = False
 errorText = ""
 
 def createBoard():
+    global boardState
     boardState = [[0,0,0],[0,0,0],[0,0,0]]
+    global playerOneTurn
+    playerOneTurn = True
+    global gameOver
     gameOver = False
     for x in range (3):
         for y in range (3):
@@ -157,6 +161,7 @@ def validMove(x, y):
         gameOver = True
     else:
         playerOneTurn = not playerOneTurn
+    print(boardState)
     whoseTurn()
 
 '''
