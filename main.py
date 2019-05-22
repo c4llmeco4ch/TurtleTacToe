@@ -177,7 +177,7 @@ def checkWin(x, y):
         turn = -1
     horiz = __checkRow(y, turn)
     vert = __checkCol(x, turn)
-    if (x == 1 and not y == 1) or (not x == 1 and y == 1):
+    if not((x == 1 and y != 1) or (x != 1 and y == 1)):
         #Only check diagonals if the space is not on a middle edge
         diagRight = __checkDiagDown(turn)
         diagLeft = __checkDiagUp(turn)
@@ -200,8 +200,8 @@ def __checkCol(x, turn):
             return False
     return True
 
-def __checkDiagDown(turn):
-    """Determines if the downward diagonal is full for winning"""
+def __checkDiagUp(turn):
+    """Determines if the upward diagonal is full for winning"""
     i = 0
     while i < len(boardState):
         if boardState[i][i] != turn:
@@ -209,11 +209,11 @@ def __checkDiagDown(turn):
         i += 1
     return True
 
-def __checkDiagUp(turn):
-    """Determines if the upward diagonal is full for winning"""
+def __checkDiagDown(turn):
+    """Determines if the downward diagonal is full for winning"""
     i = 0
     while i < len(boardState):
-        if boardState[i][len(boardState) - 1 - i] != turn:
+        if boardState[i][(len(boardState) - 1) - i] != turn:
             return False
         i += 1
     return True
@@ -224,7 +224,8 @@ def __writeWinner(turn):
         al.setx(0)
         al.write("It's a tie!", align = "center")
     else:
-        al.write("Winner!")
+        al.sety(al.ycor() + gridlength / 3)
+        al.write("Winner!", align= "center")
 
 def tieChecker():
     for y in range(len(boardState)):
