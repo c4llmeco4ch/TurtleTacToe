@@ -1,6 +1,6 @@
 from turtle import *
 import time
-#TODO: Add turtle implementation for clicking/typing spaces
+
 baseX = -75
 baseY = -75
 gridlength = 50
@@ -16,6 +16,7 @@ gameOver = False
 errorText = ""
 
 def createBoard():
+    boardState = [[0,0,0],[0,0,0],[0,0,0]]
     gameOver = False
     for x in range (3):
         for y in range (3):
@@ -96,7 +97,8 @@ def checkClick(x, y):
     print("Click registered at " + str(x) + ", " + str(y))
     if (x >= baseX and y >= baseY) and not gameOver:
         if (x <= baseX + (3 * gridlength)) and (y <= baseY + (3 * gridlength)):
-            takeTurn(__determineBlock(x, y))
+            block = __determineBlock(x, y)
+            takeTurn(block[0], block[1])
     if y >= baseY - (gridlength * 6) and y <= baseY - (gridlength * 5):
         if (x >= baseX - gridlength) and (x <= baseX + gridlength):
             al.clear()
@@ -112,10 +114,19 @@ def checkClick(x, y):
             exit()
     
 def __determineBlock(x, y):
-    row = abs(y // gridlength)
-    col = abs(x // gridlength)
+    row = -1
+    col = -1
+    for i in range(len(boardState)):
+        if y >= baseY + (i * gridlength) and y <= baseY + ((i +1) * gridlength):
+            row = i
+            break
+    for j in range(len(boardState[0])):
+        if x >= baseX + (j * gridlength) and x <= baseX + ((j + 1) * gridlength):
+            col = j
+            break
+        
     print("Col: " + str(col) + ", Row: " + str(row))
-    return takeTurn(int(col), int(row))
+    return (int(col), int(row))
 
 def takeTurn(x, y):
     if checkSpot(x, y):
@@ -127,6 +138,7 @@ def checkSpot(x, y):
     return boardState[y][x] == 0
 
 def validMove(x, y):
+    global playerOneTurn
     if playerOneTurn:
         boardState[y][x] = 1
     else:
@@ -145,6 +157,7 @@ def validMove(x, y):
         gameOver = True
     else:
         playerOneTurn = not playerOneTurn
+    whoseTurn()
 
 '''
 * @param x,y: the xy coordinate pairing for the block chosen
@@ -209,19 +222,25 @@ def __writeWinner(turn):
         al.write("Winner!")
 
 def tieChecker():
-    for space in boardState:
-        if space == 0:
-            return False
+    for y in range(len(boardState)):
+        for x in range(len(boardState[0])):
+            if boardState[y][x] == 0:
+                return False
     return True
 
 def addMarker(x, y):
     midX = (baseX + (.5 * gridlength)) + (x * gridlength)
-    midY = (baseY + (.5 * gridlength)) + (y * gridlength)
-    al.goto(midX,midY)
+    locY = (baseY + (y * gridlength))
+    al.up()
+    al.goto(midX,locY)
     if playerOneTurn:
+        al.down()
         al.circle(gridlength * .5)
     else:
+        al.sety(al.ycor() + (gridlength * .5))
+        al.down()
         al.stamp()
+    al.up()
 
 def whoseTurn():
     if playerOneTurn: 
