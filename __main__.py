@@ -40,7 +40,7 @@ def __createBox(col, row):
     al.goto(x, y)
     al.down()
     al.seth(90)
-    for i in range(4):
+    for _ in range(4):
         al.forward(gridlength)
         al.right(90)
     al.up()
@@ -88,7 +88,7 @@ def __drawRectangle(text):
     al.seth(0)
     al.down()
     al.begin_fill()
-    for i in range(2):
+    for _ in range(2):
         al.forward(gridlength * 2)
         al.right(90)
         al.forward(gridlength)

@@ -1,7 +1,7 @@
-from turtle import *
+from turtle import Turtle
 
 '''
-* For students who will be learning 
+* For students who will be learning
 * to make Tic-Tac-Toe with turtle,
 * this is a brief introduction into
 * how we can make the board itself.
@@ -24,4 +24,3 @@ for k in range(3):
     al.up()
     al.goto((k + 1) * -1 * squareLength, 0)
     al.down()
-
