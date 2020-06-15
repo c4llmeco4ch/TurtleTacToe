@@ -138,17 +138,14 @@ def __determineBlock(x, y):
                  + (j * gridlength)) and x <= baseX + ((j + 1) * gridlength):
             col = j
             break
-
-    print("Col: {c}, Row: {r}".format(c=col, r=row))
-    return (int(col), int(row))
+    print(f"Col: {col}, Row: {row}")
+    return (col, row)
 
 
 def takeTurn(x, y):
     """Current player takes their turn if the click is valid"""
     if checkSpot(x, y):
         validMove(x, y)
-    else:
-        return None
 
 
 def checkSpot(x, y):
@@ -160,17 +157,10 @@ def validMove(x, y):
     """Make a move on the expected square"""
     global gameOver
     global playerOneTurn
-    if playerOneTurn:
-        boardState[y][x] = 1
-    else:
-        boardState[y][x] = -1
+    boardState[y][x] = 1 if playerOneTurn else -1
     addMarker(x, y)
     if checkWin(x, y):
-        turn = -1
-        if playerOneTurn:
-            turn = 1
-        else:
-            turn = 2
+        turn = 1 if playerOneTurn else 2
         __writeWinner(turn)
         gameOver = True
     elif tieChecker():
@@ -184,21 +174,16 @@ def validMove(x, y):
 
 def checkWin(x, y):
     """Check if the turn player has won"""
-    turn = 0
-    if playerOneTurn:
-        turn = 1
-    else:
-        turn = -1
+    turn = 1 if playerOneTurn else -1
     horiz = __checkRow(y, turn)
     vert = __checkCol(x, turn)
     if not((x == 1 and y != 1) or (x != 1 and y == 1)):
         # Only check diagonals if the space is not on a middle edge
-        diagRight = __checkDiagDown(turn)
-        diagLeft = __checkDiagUp(turn)
+        diag_down = __checkDiagDown(turn)
+        diag_up = __checkDiagUp(turn)
     else:
-        diagRight = False
-        diagLeft = False
-    return horiz or vert or diagRight or diagLeft
+        diag_down, diag_up = False, False
+    return horiz or vert or diag_down or diag_up
 
 
 def __checkRow(y, turn):
@@ -220,20 +205,17 @@ def __checkCol(x, turn):
 def __checkDiagUp(turn):
     """Determines if the upward diagonal is full for winning"""
     i = 0
-    while i < len(boardState):
-        if boardState[i][i] != turn:
+    for i, row in enumerate(boardState):
+        if row[-(i+1)] != turn:
             return False
-        i += 1
     return True
 
 
 def __checkDiagDown(turn):
     """Determines if the downward diagonal is full for winning"""
-    i = 0
-    while i < len(boardState):
-        if boardState[i][(len(boardState) - 1) - i] != turn:
+    for i, row in enumerate(boardState):
+        if row[i] != turn:
             return False
-        i += 1
     return True
 
 
@@ -275,13 +257,10 @@ def addMarker(x, y):
 
 def whoseTurn():
     """Move the turtle to the correct side in the turn marker"""
-    if playerOneTurn:
-        al.goto(-1 * gridlength, baseY - (gridlength * 2.75))
-    else:
-        al.goto(gridlength, baseY - (gridlength * 2.75))
+    al.goto(gridlength * (-1 if playerOneTurn else 1),
+            baseY - (gridlength * 2.75))
 
 
 createBoard()
-
 screen.onclick(checkClick)
 screen.mainloop()
