@@ -19,10 +19,10 @@ errorText = ""
 def createBoard():
     """Establish the backend and frontend boards"""
     global boardState
-    boardState = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
     global playerOneTurn
-    playerOneTurn = True
     global gameOver
+    boardState = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    playerOneTurn = True
     gameOver = False
     for x in range(3):
         for y in range(3):
@@ -104,24 +104,24 @@ def __drawRectangle(text):
 
 def checkClick(x, y):
     """Determine whether the click is inside the board"""
-    print("Click registered at {x}, {y}".format(x=x, y=y))
-    if (x >= baseX and y >= baseY) and not gameOver:
-        if (x <= baseX + (3 * gridlength)) and (y <= baseY + (3 * gridlength)):
-            block = __determineBlock(x, y)
-            takeTurn(block[0], block[1])
-    if y >= baseY - (gridlength * 6) and y <= baseY - (gridlength * 5):
-        if (x >= baseX - gridlength) and (x <= baseX + gridlength):
-            al.clear()
-            createBoard()
-        elif (x >= baseX + (gridlength * 2)) and x <= baseX + (gridlength * 4):
-            al.up()
-            al.goto(0, gridlength * 3)
-            al.down()
-            al.write("Thanks for playing", align="center")
-            al.up()
-            al.sety(al.ycor() - gridlength // 4)
-            time.sleep(1)
-            exit()
+    print(f"Click registered at {x}, {y}")
+    if not gameOver and ((x >= baseX and x <= baseX + (3 * gridlength)) and
+                         (y >= baseY and y <= baseY + (3 * gridlength))):
+        block = __determineBlock(x, y)
+        takeTurn(block[0], block[1])
+    elif y >= baseY - (gridlength * 6) and y <= baseY - (gridlength * 5) and (
+         (x >= baseX - gridlength) and (x <= baseX + gridlength)):
+        al.clear()
+        createBoard()
+    elif (x >= baseX + (gridlength * 2)) and x <= baseX + (gridlength * 4):
+        al.up()
+        al.goto(0, gridlength * 3)
+        al.down()
+        al.write("Thanks for playing", align="center")
+        al.up()
+        al.sety(al.ycor() - gridlength // 4)
+        time.sleep(1)
+        exit()
 
 
 def __determineBlock(x, y):
